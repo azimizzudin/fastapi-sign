@@ -1,0 +1,9 @@
+env:
+  - python=3.11.5
+
+build:
+  - python
+
+run:
+  - pip install -r requirements.txt
+  - uvicorn main:app --host 0.0.0.0 --port $PORT
