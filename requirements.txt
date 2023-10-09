@@ -1,4 +1,4 @@
-uvicorn==0.23.2
+uvicorn==0.22.0
 fastapi==0.103.1
 opencv-python==4.8.0.76
 mediapipe==0.10.5
