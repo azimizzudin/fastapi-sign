@@ -21,7 +21,7 @@ def first_example():
     return {"GFG Example": "FastAPI"}
     
 @app.post("/detect_sign_language")
-async def detect_sign_language(file: UploadFile):
+async def detect_sign_language(file: UploadFile = File(...)):
     try:
         data_aux = []
         x_ = []
