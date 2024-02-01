@@ -4,8 +4,15 @@ import pickle
 import cv2
 import mediapipe as mp
 import numpy as np
+import base64
+from io import BytesIO
+from PIL import Image
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class ImageRequest(BaseModel):
+    image: str
 
 # Initialize Model
 model_dict = pickle.load(open('./model.p', 'rb'))
@@ -66,3 +73,16 @@ async def detect_sign_language(file: UploadFile = File(...)):
     
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
+    
+@app.post("/upload_image")
+async def upload_image(image_request: ImageRequest):
+    try:
+        image_data = base64.b64decode(image_request.image)
+        image = Image.open(BytesIO(image_data))
+
+        # Process the image as needed (e.g., save, analyze, etc.)
+        # ...
+
+        return JSONResponse(content={"message": "Image received and processed successfully"}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": f"Error processing image: {str(e)}"}, status_code=500) 
