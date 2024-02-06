@@ -4,24 +4,16 @@ import pickle
 import cv2
 import mediapipe as mp
 import numpy as np
-import base64
-from io import BytesIO
-from PIL import Image
-from pydantic import BaseModel
 
 app = FastAPI()
 
-class ImageRequest(BaseModel):
-    image: str
-
 # Initialize Model
-model_dict = pickle.load(open('./model.p', 'rb'))
+model_dict = pickle.load(open('./model_v3_full.p', 'rb'))
 model = model_dict['model']
 
 # Initialize MediaPipe Hand module
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
-labels_dict = {0: 'A', 1: 'B', 2: 'C'}
 
 @app.get("/")
 def first_example():
@@ -63,26 +55,11 @@ async def detect_sign_language(file: UploadFile = File(...)):
             y2 = int(max(y_) * H) - 10
 
             prediction = model.predict([np.asarray(data_aux)])
-
-            predicted_character = labels_dict[int(prediction[0])]
             
-            return JSONResponse(content = {"char": predicted_character})
+            return JSONResponse(content = {"message": str(prediction)})
         
         else:
             return JSONResponse(content = {"message": "No hand detected in the frame."})
     
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
-    
-@app.post("/upload_image")
-async def upload_image(image_request: ImageRequest):
-    try:
-        image_data = base64.b64decode(image_request.image)
-        image = Image.open(BytesIO(image_data))
-
-        # Process the image as needed (e.g., save, analyze, etc.)
-        # ...
-
-        return JSONResponse(content={"message": "Image received and processed successfully"}, status_code=200)
-    except Exception as e:
-        return JSONResponse(content={"message": f"Error processing image: {str(e)}"}, status_code=500) 
