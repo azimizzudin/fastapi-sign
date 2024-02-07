@@ -15,6 +15,8 @@ model = model_dict['model']
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 
+labels_dict = {'a': 'A', 'b': 'B', 'c': 'C', 'd': 'D', 'e': 'E', 'f': 'F', 'g': 'G', 'h': 'H', 'i': 'I', 'k': 'K', 'l': 'L', 'm': 'M', 'n': 'N', 'o': 'O', 'p': 'P', 'q': 'Q', 'r': 'R', 's': 'S', 't': 'T', 'u': 'U', 'v': 'V', 'w': 'W', 'x': 'X', 'y': 'Y'}
+
 @app.get("/")
 def first_example():
     return {"GFG Example": "FastAPI"}
@@ -55,8 +57,9 @@ async def detect_sign_language(file: UploadFile = File(...)):
             y2 = int(max(y_) * H) - 10
 
             prediction = model.predict([np.asarray(data_aux)])
+            predictionStr = labels_dict[str(prediction[0])]
             
-            return JSONResponse(content = {"message": str(prediction)})
+            return JSONResponse(content = {"message": predictionStr})
         
         else:
             return JSONResponse(content = {"message": "No hand detected in the frame."})
