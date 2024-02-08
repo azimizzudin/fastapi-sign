@@ -64,7 +64,7 @@ async def detect_sign_language(file: UploadFile = File(...)):
             return JSONResponse(content = {"message": predictionStr})
         
         else:
-            return JSONResponse(content = {"message": "No hand detected in the frame."})
+            return JSONResponse(content = {"message": " "})
     
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
