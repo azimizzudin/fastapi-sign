@@ -71,7 +71,7 @@ async def detect_fingerspelling_right(file: UploadFile = File(...)):
             return JSONResponse(content = {"message": predictionStr})
         
         else:
-            return JSONResponse(content = {"message": " "})
+            return JSONResponse(content = {"message": "Keine Hand erkannt."})
     
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
